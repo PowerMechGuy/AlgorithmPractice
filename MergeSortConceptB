@@ -1,0 +1,401 @@
+package container;
+
+public class SorterB{
+    public static void main(String[] args){
+			/*int sortThis = 87120356;
+   		//int sortThis = 1029374091;
+   		System.out.println("Current input: " + sortThis + ".");
+     	SorterB merge = new SorterB();
+      	merge.init(sortThis);*/
+    }
+    
+    public void init(int input)
+    {
+      System.out.println("Initializing...");
+      
+      int size = 1;
+      boolean done = false;
+      String inputData = String.valueOf(input);
+      
+      while(!done)
+      {	
+      		size = size * 2;
+        	
+      		if(size >= inputData.length())
+        {
+        		done = true;
+        }
+      }
+      
+      //int setSize = size / 4;
+      
+      System.out.println("Size of work variable: " + size + ".");
+      
+      char[] data = inputData.toCharArray();
+      char[] newData = new char[size];
+      
+      for(int i = 0; i < newData.length; i++)
+      {
+      		newData[i] = '*';
+      }
+      
+      for(int j = 0; j < data.length; j++)
+      {
+      		newData[j] = data[j];
+      }
+      
+      display(newData);
+      
+      String output = String.valueOf(newData);
+      
+      sort(output, 0, 1, 1, size, false, false, '*', 1);
+      
+    }//End of init function
+    
+		public void display(char[] input)
+ 		{
+   			System.out.print("Value of array: ");
+      		for(int i = 0; i < input.length; i++)
+      		{
+      				System.out.print(input[i]);
+      		}
+      		System.out.println(".");
+   	}//End of display function
+    
+    public void sort(String input, int spotA, int spotB, int level, int reset, boolean two, boolean resort, char holderA, int set)
+    {
+    		System.out.println("Sorting...");
+      
+      if(level == reset)
+      {
+      		return;
+      }
+       
+      char[] data = input.toCharArray();
+      
+      display(data);
+      
+      if(level == 1)
+      {
+         int repeat = 1;
+            
+         if(data.length > 2)
+         {
+            repeat = 2;
+         }//just to make sure we are not
+         //overstepping our variable size
+         
+         for(int i = 0; i < repeat; i++)
+         {
+            char A = data[spotA];
+            System.out.println("A = : " + A);
+            char B = data[spotB];
+            System.out.println("B = : " + B);
+            
+            if(A == '*' || B == '*')
+            {
+               if(A == '*' && B == '*')
+               {
+                  break;
+               }//Both are empty
+               
+               else if(A == '*' && B != '*')
+               {
+                  data[spotA] = B;
+               }//A is empty
+               
+               else if(B == '*' && A != '*')
+               {
+                  data[spotA] = A;
+               }//B is empty
+               
+               
+            }//Asterisk check code
+            
+            else if(Character.getNumericValue(B) < Character.getNumericValue(A))
+            {
+               char x = data[spotA];
+               data[spotA] = data[spotB];
+               data[spotB] = x;
+               
+            }//This if checks to see if B is less than A 
+            
+            spotA = spotA + 2;
+            spotB = spotB + 2;
+            
+         }//This for loop will step through
+         //four numbers in the array and 
+         //partially sort them
+         
+         level = 2;
+         
+         //Base spot values off the current set value
+         if(set == 1)
+         {
+            spotA = 0;
+            spotB = 2;
+         }//On set 1
+         
+         else
+         {
+            spotA = (set * 4) - 4;
+            spotB = (set * 4) - 2;
+            System.out.println("Setting up position variables");
+            System.out.println("spotA = : " + spotA);
+            System.out.println("spotB = : " + spotB);
+         }//Not on set 1
+         //spotA = ?;
+         //spotB = ?;
+         
+         System.out.println("Level 1 partial sort complete.");
+         display(data);
+          
+      }//This if deals with the first
+      //Level.
+      
+      else
+      {
+         System.out.println("We made it to the else.");
+         System.out.println("spotA = : " + spotA);
+         System.out.println("spotB = : " + spotB);
+         
+         boolean done = false;
+         
+         int spot = spotA;
+         int counterA = 0;
+         int counterB = 0;
+         
+         while(done == false)
+         {
+            char A = data[spotA];
+            System.out.println("A = : " + A);
+            System.out.println("holderA = : " + holderA);
+            char B = data[spotB];
+            System.out.println("B = : " + B);
+            
+            if(holderA != '*')
+            {
+               A = holderA;
+            }
+            
+            if(B == '*')
+            {
+               if(B == '*' && A != '*')
+               {
+                  if(counterB == level && counterA != level)
+                  {
+                     data[spot] = A;
+                     counterA++;
+                     spotA++;
+                     spot++;
+                  }
+                  
+                  else
+                  {
+                     data[spot] = A;
+                     level = reset;
+                     done = true;
+                  }
+               }//B is an asterisk but we still have a value
+               //for a. We take that and then we are done.
+               
+            }//This is to check if we have hit
+            //an empty value location
+            
+            else if(counterA == level || counterB == level)
+            {
+               if(counterA == level && counterB == level)
+               {
+                  done = true;
+                  System.out.println("All values exhausted");
+               }//All values exhuasted
+               
+               else if(counterA == level)
+               {
+                  for(int a = counterB; a < level; a++)
+                  {
+                     data[spot] = B;
+                     spotB++;
+                     spot++;
+                     if(spotB == data.length)
+                     {
+                        B = data[spotB - 1];
+                     }
+                     
+                     else
+                     {
+                        B = data[spotB];
+                     }
+                  }
+                  
+                  done = true;
+                  System.out.println("A values exhausted");
+               }//A values exhausted
+               
+               else if(counterB == level)
+               {
+                  for(int b = counterA; b < level; b++)
+                  {
+                     if(holderA != '*')
+                     {
+                        data[spot] = holderA;
+                        holderA = '*';
+                     }
+                     
+                     else
+                     {
+                        data[spot] = A;
+                     }
+                     spotA++;
+                     spot++;
+                     A = data[spotA];
+                  }
+                  
+                  done = true;
+                  System.out.println("B values exhuasted");
+               }//B values exhausted
+               
+            }//Either some or all of the values got exhausted
+            
+            else if(Character.getNumericValue(A) < Character.getNumericValue(B) || Character.getNumericValue(B) < Character.getNumericValue(A) || Character.getNumericValue(A) == Character.getNumericValue(B))
+            {
+               if(Character.getNumericValue(A) < Character.getNumericValue(B))
+               {
+                  if(holderA != '*')
+                  {
+                     A = data[spot];
+                     data[spot] = holderA;
+                     holderA = A;
+                     //holderA = '*';
+                  }
+                  
+                  else
+                  {
+                     data[spot] = A;
+                  }
+                  counterA++;
+                  spotA++;
+                  spot++;
+               }//A is less than B
+               
+               else if(Character.getNumericValue(B) < Character.getNumericValue(A))
+               {
+                  if(spotA == spot)
+                  {
+                        System.out.println("holderA had a value.");
+                        holderA = data[spotA];
+                        if(level == 2)
+                        {
+                           data[spotB] = holderA;
+                        }
+                        else
+                        {
+                           data[spotB] = '*';
+                        }
+                        //data[spotB] = '*';
+                        spotA++;
+                        counterA++;
+                        //holderA = '*';
+                        
+                  }//We don't want to compare the wrong
+                  //number in the future.
+                  
+                  data[spot] = B;
+                  counterB++;
+                  spotB++;
+                  spot++;
+               }//B is less than A
+               
+               else if(Character.getNumericValue(A) == Character.getNumericValue(B))
+               {
+                  data[spot] = A;
+                  data[spot + 1] = B;
+                  counterA++;
+                  counterB++;
+                  spotA++;
+                  spotB++;
+                  spot = spot + 2;
+               }//A is equal to B
+            }//Here we check the status of A and B
+            
+            System.out.println("Sorting at level " + level);
+            display(data);
+            
+            //done = true;
+            //level = reset;
+            
+         }//I need a while here since
+         //the operations performed
+         //in this loop may not be redundant
+         
+         //System.out.println("Bottom of else");
+         level = level * 2;
+         
+      }//THis else deals with every other level
+      
+      /*if(set % 4 == 0)
+      {
+         two = false;
+         set++;
+         spotA = (set * 4) - 4;
+         spotB = (set * 4) - 3;
+         level = 1;
+         holderA = '*';
+         System.out.println("not supposed to be here either");
+      }
+      
+      else if((set % 4) % 2 == 0)
+      {
+         two = false;
+         spotA = 0;
+         spotB = (set * 4) - level;
+         holderA = '*';
+         System.out.println("not supposed to be here");
+      }*/
+      
+      if(two == false)
+      {
+         
+         if(level > 2)
+         {
+            two = true;
+            level = 1;
+            set++;
+            spotA = (set * 4) - 4;
+            spotB = (set * 4) - 3;
+            System.out.println("Setting back to level 1");
+            holderA = '*';
+         }
+      }
+         
+      else
+      {
+         if(level > 2)
+         {
+            two = false;
+            //level = level * 2
+            //set++;
+            spotA = 0;
+            spotB = (set * 4) - level;
+            holderA = '*';
+            System.out.println("We made it here somehow...");
+         }
+      }
+      
+      String output = String.valueOf(data);
+      
+      //setup the loops so that they iterate
+      //through the string in sets of 4
+      
+      sort(output, spotA, spotB, level, reset, two, resort, holderA, set);
+      
+      /*for(int z = 0; z < 1; z++)
+      {
+         sort(input, spotA, spotB, level, reset, two, resort, holderA, set);
+      }*/
+      
+      //level = reset;
+       
+    }//End of recursive sort function
+  
+}//End of class SorterB
